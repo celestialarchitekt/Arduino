@@ -15,6 +15,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Debug tar availability
+        run: |
+          which tar
+          tar --version
+          echo "PATH=$PATH"
+
+      - name: Install tar if missing (safe fallback)
+        run: |
+          if ! command -v tar &> /dev/null
+          then
+            sudo apt-get update
+            sudo apt-get install -y tar
+          else
+            echo "tar is already installed"
+          fi
+
       - name: Install Arduino CLI
         run: |
           curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
