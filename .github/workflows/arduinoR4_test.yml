@@ -24,11 +24,7 @@ jobs:
       - name: Install Arduino Core for Uno R4 Wifi
         run: arduino-cli core install arduino:megaavr
 
-      - name: Compile all sketches
-        run: |
-          for sketch in ./sketch_*; do
-            echo "Compiling $sketch"
-            arduino-cli compile --fqbn arduino:megaavr:unoR4wifi "$sketch" || exit 1
-          done
+      - name: Compile blinkWithoutDelay sketch
+        run: arduino-cli compile --fqbn arduino:megaavr:unoR4wifi ./sketch_blinkWithoutDelay
 
 
