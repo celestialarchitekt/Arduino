@@ -13,12 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Debug tar availability
-        run: |
-          echo "which tar: $(which tar)"
-          tar --version || true
-          echo "PATH=$PATH"
-
       - name: Install Arduino CLI into ~/.arduino15/bin
         run: |
           mkdir -p "$HOME/.arduino15/bin"
@@ -36,5 +30,17 @@ jobs:
       - name: Install Arduino Core for Uno R4 Wifi
         run: arduino-cli core install arduino:megaavr
 
-      - name: Compile blinkWithoutDelay sketch
-        run: arduino-cli compile --fqbn arduino:megaavr:unoR4wifi ./sketch_blinkWithoutDelay
+      - name: Compile all sketches
+        run: |
+          set -e
+          for sketch in ./sketch_*; do
+            echo "Compiling $sketch"
+            arduino-cli compile --fqbn arduino:megaavr:unoR4wifi "$sketch"
+          done
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: compiled-sketches
+          path: |
+            ./sketch_*/build
