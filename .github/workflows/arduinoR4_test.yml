@@ -13,6 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install prerequisites (jq for fallback)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
       - name: Install Arduino CLI into ~/.arduino15/bin (with fallback)
         run: |
           set -e
@@ -24,7 +29,7 @@ jobs:
           echo "Contents of $HOME/.arduino15/bin after install:"
           ls -l "$HOME/.arduino15/bin"
 
-          # Fallback: if arduino-cli missing or not executable, download latest release tarball
+          # Fallback: if arduino-cli missing or not executable, fetch latest release
           if [ ! -x "$HOME/.arduino15/bin/arduino-cli" ]; then
             echo "arduino-cli not found or not executable; fetching latest release directly"
             ARCH=amd64
@@ -45,18 +50,18 @@ jobs:
         run: arduino-cli core update-index
 
       - name: Install Arduino Core for Uno R4 Wifi
-        run: arduino-cli core install arduino:megaavr
+        run: arduino-cli core install arduino:renesas_uno
 
       - name: Compile all sketches
         run: |
           set -e
           for sketch in ./sketch_*; do
             echo "=== Compiling $sketch ==="
-            arduino-cli compile --fqbn arduino:megaavr:unoR4wifi "$sketch"
+            arduino-cli compile --fqbn arduino:renesas_uno:unor4wifi "$sketch"
           done
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: compiled-sketches
           path: |
