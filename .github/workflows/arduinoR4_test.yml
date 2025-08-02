@@ -13,10 +13,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Arduino CLI into ~/.arduino15/bin
+      - name: Install Arduino CLI into ~/.arduino15/bin (with fallback)
         run: |
+          set -e
           mkdir -p "$HOME/.arduino15/bin"
-          BINDIR=$HOME/.arduino15/bin curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+          export BINDIR="$HOME/.arduino15/bin"
+          # Primary install via official script
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+
+          echo "Contents of $HOME/.arduino15/bin after install:"
+          ls -l "$HOME/.arduino15/bin"
+
+          # Fallback: if arduino-cli missing or not executable, download latest release tarball
+          if [ ! -x "$HOME/.arduino15/bin/arduino-cli" ]; then
+            echo "arduino-cli not found or not executable; fetching latest release directly"
+            ARCH=amd64
+            OS=linux
+            VERSION=$(curl -s https://api.github.com/repos/arduino/arduino-cli/releases/latest | jq -r .tag_name)
+            curl -L "https://github.com/arduino/arduino-cli/releases/download/${VERSION}/arduino-cli_${VERSION#v}_${OS}_${ARCH}.tar.gz" | tar -xz -C "$HOME/.arduino15/bin" --strip-components=1
+          fi
+
+          chmod +x "$HOME/.arduino15/bin/arduino-cli"
           echo "$HOME/.arduino15/bin" >> $GITHUB_PATH
 
       - name: Verify arduino-cli is available
