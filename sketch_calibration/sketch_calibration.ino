@@ -16,7 +16,7 @@ int sensorMax=0;    // set as lowest.
 void setup() {
   // put your setup code here, to run once:
 
-  pinMode(ledpin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, HIGH);
 
   // calibration starts for first 5000ms or 5sec
