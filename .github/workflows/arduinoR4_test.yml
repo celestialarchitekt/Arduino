@@ -19,7 +19,7 @@ jobs:
           BINDIR=$HOME/.arduino15/bin curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
           echo "$HOME/.arduino15/bin" >> $GITHUB_PATH
 
-      - name: Verify arduino-cli is on PATH
+      - name: Verify arduino-cli is available
         run: |
           which arduino-cli
           arduino-cli version
@@ -34,7 +34,7 @@ jobs:
         run: |
           set -e
           for sketch in ./sketch_*; do
-            echo "Compiling $sketch"
+            echo "=== Compiling $sketch ==="
             arduino-cli compile --fqbn arduino:megaavr:unoR4wifi "$sketch"
           done
 
