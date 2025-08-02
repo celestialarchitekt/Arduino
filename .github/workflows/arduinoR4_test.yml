@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PATH: $HOME/.arduino15/bin:$PATH
 
     steps:
       - uses: actions/checkout@v4
@@ -26,5 +28,3 @@ jobs:
 
       - name: Compile blinkWithoutDelay sketch
         run: arduino-cli compile --fqbn arduino:megaavr:unoR4wifi ./sketch_blinkWithoutDelay
-
-
