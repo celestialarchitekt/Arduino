@@ -21,7 +21,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   sensorValue=analogRead(analogPin);
-  outputValue=map(sensorValue,0,1023,0,,255);
+  outputValue=map(sensorValue,0,1023,0,255);
   
   analogWrite(analogOutPin, outputValue);
 
