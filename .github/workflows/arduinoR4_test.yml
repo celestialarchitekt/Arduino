@@ -16,16 +16,19 @@ jobs:
       - name: Debug tar availability
         run: |
           echo "which tar: $(which tar)"
-          tar --version
+          tar --version || true
           echo "PATH=$PATH"
 
-      - name: Install Arduino CLI
+      - name: Install Arduino CLI into ~/.arduino15/bin
         run: |
-          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+          mkdir -p "$HOME/.arduino15/bin"
+          BINDIR=$HOME/.arduino15/bin curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
           echo "$HOME/.arduino15/bin" >> $GITHUB_PATH
 
       - name: Verify arduino-cli is on PATH
-        run: which arduino-cli
+        run: |
+          which arduino-cli
+          arduino-cli version
 
       - name: Update Arduino Core Index
         run: arduino-cli core update-index
