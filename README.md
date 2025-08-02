@@ -1,4 +1,4 @@
-# Arduino PWM
+# Arduino R4 WIFI
 
 Pulse width modulation: keeping the frequency of signal the same, change the duty cycle. 
 Duty cycle: for how much duration is the signal on during one cycle.
@@ -20,7 +20,7 @@ Duty Cycle = 50% high, 50% low in one cycle
 
 
 
-##PWM Frequency
+## PWM Frequency
 
 - By default the R4 uses a default PWM of 490Hz.
 - AnalogWrite(pin, value), value decides the duty cycle 
