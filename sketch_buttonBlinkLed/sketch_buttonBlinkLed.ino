@@ -23,7 +23,7 @@ bool ledState=false;
 
 void setup() {
   // put your setup code here, to run once:
-
+  Serial.begin(9600);
   pinMode(buttonPin,INPUT_PULLUP); 
   pinMode(ledPin,OUTPUT);
 
@@ -33,22 +33,31 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   int reading = digitalRead(buttonPin);
+  Serial.print("reading: ");
+  Serial.println(reading);
 
   if(reading!=lastReading)
   {
     lastDebounceTime=millis();
+    Serial.print("last debounce time: ");
+    Serial.println(lastDebounceTime);
   }
   
   if(millis()-lastDebounceTime>debounceTime)
   {
     if(reading!=buttonState)
     {
+      Serial.print("button state: ");
+      Serial.println(buttonState);
       buttonState=reading;
+      Serial.print("button state: ");
+      Serial.println(buttonState);
     }
   }
 
 
   lastReading=reading;
+
 
   
   //analogWrite(ledPin, buttonState==LOW ? ledLevel :0);

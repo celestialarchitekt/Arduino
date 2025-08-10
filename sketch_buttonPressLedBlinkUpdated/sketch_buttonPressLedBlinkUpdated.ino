@@ -1,10 +1,20 @@
+
+// button settings
 const int button = 7;       // Button input pin
 const int led = 9;          // LED output pin (PWM capable)
-const unsigned long debounceTime = 5; // Debounce delay in ms
 
+// flags
 bool ledFlag = false;
 int lastButtonState = HIGH;
+
+// timers
 unsigned long lastDebounceTime = 0;
+const unsigned long debounceTime = 5; // Debounce delay in ms
+unsigned long lastBlink = 0;
+unsigned long blinkInterval=500;
+
+
+
 
 void setup() {
   Serial.begin(9600);
@@ -12,16 +22,58 @@ void setup() {
   pinMode(led, OUTPUT);
 }
 
-void loop() {
-  int currentState = digitalRead(button);
-  Serial.print("current state: ");
-  Serial.println(currentState);
 
+
+
+void loop() {
+
+
+  int currentState = digitalRead(button);
+
+/*
   if(currentState != lastButtonState)
   {
     lastDebounceTime = millis();
   }
 
+  if((millis() - lastDebounceTime > debounceTime))
+  {
+    if(currentState==LOW )
+    {
+      ledFlag = true;
+    }else{
+      ledFlag=false;
+    }
+  }
+
+*/
+
+
+  //lastButtonState=currentState;
+  //analogWrite(led, ledFlag?50:0); // ledFlag->true, ledFlag=false
+
+
+  if(millis() - lastDebounceTime > debounceTime && currentState==LOW)
+  {
+    if(millis() - lastBlink > blinkInterval)
+    {
+        ledFlag = !ledFlag;
+        lastBlink = millis();
+     
+    }
+  }else
+  {
+    ledFlag = false;
+    lastBlink=0;
+  }
+
+
+  analogWrite(led, ledFlag? 50 :0); // ledFlag->true, ledFlag=false
+  lastButtonState=currentState;
+
+
+
+  /*
   if(millis() - lastDebounceTime > debounceTime && currentState==LOW)
   {
     analogWrite(led,50);
@@ -30,10 +82,9 @@ void loop() {
   {
     analogWrite(led,0);
   }
+  */
 
-
-  lastButtonState=currentState;
+  
   
 
-
-}
+} // end of program
