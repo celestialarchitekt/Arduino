@@ -1,76 +1,54 @@
-/*
-Using a rotary encoder to set brightness of LED
+const int PIN_CLK = 2;
+const int PIN_DT  = 3;
+const int PIN_SW  = 4;
 
-CLK: clock signal  : outputs pulses as we rotate-used to detect movement
-DT :  data signal  : works with clock to determine direction of rotation
-SW :  switch (push button/toggle)      : detects when knob is moved, usually LOW
-+  :  power supply 5V
-GND: ground
-*/
+long counter = 0;
+int lastCLKState;
 
-const uint8_t PIN_CLK = 2;
-const uint8_t PIN_DT = 3;
-const uint8_t PIN_SW = 4; // button at digital pin 4
+unsigned long lastDebounceTime=0;
+unsigned long DebounceTime=20;
 
-const int LED_PIN = 5; // pwm
 
-int lastStateCLK = HIGH;
-int ledLevel = 50;
-bool ledEnabled = false;
-int buttonState = HIGH;
-
-unsigned long debounceTime = 20;
-unsigned long lastDebounceTime = 0;
 
 void setup() {
   pinMode(PIN_CLK, INPUT_PULLUP);
-  pinMode(PIN_DT, INPUT_PULLUP);
-  pinMode(PIN_SW, INPUT_PULLUP);
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(PIN_DT,  INPUT_PULLUP);
+  pinMode(PIN_SW,  INPUT_PULLUP);
 
   Serial.begin(9600);
 
-  lastStateCLK = digitalRead(PIN_CLK);
-  buttonState = digitalRead(PIN_SW);
-  analogWrite(LED_PIN, 0);
+  lastCLKState = digitalRead(PIN_CLK);
 }
 
 void loop() {
-  int clk = digitalRead(PIN_CLK);
-  int dt = digitalRead(PIN_DT);
+  int clkState = digitalRead(PIN_CLK);
 
-  // Rotary encoder rotation detection
-  if (clk != lastStateCLK) {
-    if (digitalRead(PIN_DT) != clk) {
-      ledLevel += 5;  // clockwise
+  // Detect a change in CLK , rising edge and debounce
+  if ((clkState == HIGH && lastCLKState==LOW) && (millis()-lastDebounceTime)>DebounceTime) 
+  {
+
+    // If DT state is different from CLK, it's CW
+    if (digitalRead(PIN_DT) != clkState) {
+      counter++;
     } else {
-      ledLevel -= 5;  // counter-clockwise
+      counter--;
     }
-    ledLevel = constrain(ledLevel, 0, 255);
-    Serial.print("Brightness: ");
-    Serial.println(ledLevel);
+
+    Serial.print("Counter: ");
+    Serial.println(counter);
+     lastDebounceTime=millis();
   }
-  lastStateCLK = clk;
-
-  // Button debounce & toggle
-  int reading = digitalRead(PIN_SW);
-
-  if (reading != buttonState) {
-    lastDebounceTime = millis();
-  }
-
-  if ((millis() - lastDebounceTime) > debounceTime) {
-    if (reading != buttonState) {
-      buttonState = reading;
-      if (buttonState == LOW) {
-        ledEnabled = !ledEnabled;  // toggle on press
-        Serial.print("LED Enabled: ");
-        Serial.println(ledEnabled);
-      }
-    }
-  }
-
-  // Set LED brightness or off
-  analogWrite(LED_PIN, ledEnabled ? ledLevel : 0);
+ 
+  lastCLKState = clkState;
 }
+
+
+/* 
+NOTE: if we use
+
+if(clkState!=lastClkState)
+-> it checks for rise and fall edge in one pulse, counter will be incremented twice
+
+
+*/
 
