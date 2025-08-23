@@ -21,6 +21,8 @@ const int TFT_MOSI =  11;
 const int TFT_SCK  =  13;
 const int TFT_MISO =  12;
 
+int seconds=0;
+
 // MOSI is pin 11 and SCK is pin 13 by defaul ,MISO is pin 12
 
 // Hardware SPI: MOSI/SCK from ICSP header
@@ -71,27 +73,29 @@ void setup() {
     while (1); // doesnt let it go to void loop() if INIT fails
   }
 
-  /*
+  
   // RTC first time setup
   RTCTime startTime(23, //day
   Month::AUGUST,        // month
   2025,                 // year
-  18, 40, 00,          // time
+  19, 18, 00,          // time
   DayOfWeek::SATURDAY,   // day
   SaveLight::SAVING_TIME_ACTIVE);
 
   RTC.setTime(startTime);
-  */
+  
 }
 
 void loop() {
 
   RTCTime currentTime;
   RTC.getTime(currentTime);
-  
-  int x = tft.getCursorX();
-  int y = tft.getCursorY();
+  char timeStr[9]; // HH:MM:SS\0 thus 9, c style strings add null_char at end
 
+  //int x = tft.getCursorX();
+  //int y = tft.getCursorY();
+
+  //-------  Date ----------
   tft.setCursor(0, 50);
   tft.print(currentTime.getDayOfMonth());
   tft.print("-");
@@ -99,22 +103,28 @@ void loop() {
   tft.print("-");
   tft.print(currentTime.getYear());
 
-  tft.setCursor(0, 80);
-  tft.print(currentTime.getHour());
-  tft.print(":");
-  tft.print(currentTime.getMinutes());
-  tft.print(":");
-  tft.print(currentTime.getSeconds());
+  // ------   Time ------------
 
-  Serial.println(x);
-  Serial.println(y);
+  snprintf(timeStr, sizeof(timeStr), "%02u:%02u:%02u",
+        currentTime.getHour(),
+        currentTime.getMinutes(),
+        currentTime.getSeconds()
+  );
+
+  tft.setCursor(0,80);
+  tft.print(timeStr);
   
+
+  
+  //--- Temperature ---------
   tft.setCursor(0, 120);
   tft.print("Temp: ");
   tft.print(thermo.getTemperature());
-  tft.print(((char)247);
+  tft.print((char)247);
   tft.print(" C ");
   
+
+  // --- Delay ------
   delay(1000); //1sec or 1000ms
 
 }//end program
