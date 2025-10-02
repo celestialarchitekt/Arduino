@@ -61,7 +61,7 @@ String getDayOfWeek(DayOfWeek d)
 
 String getDayOfWeek(DayOfWeek d)
 {
-  static std::vector<String> days = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"};  
+  static std::vector<String> days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};  
   return days[int(d)-1];
 }
 
@@ -150,33 +150,37 @@ void loop() {
   tft.setCursor(0, 160);
   tft.print(day);
 
-  tft.setCursor(0,200);
-  if(day=="MONDAY")
+  //--- Quote of the Day -----
+  tft.setCursor(60,200);
+  tft.print("Quote of the Day");
+  
+  tft.setCursor(0,250);
+  if(day=="Monday")
   {
     
     tft.print("Start anew with a pure heart.");
   }
-  else if(day=="TUESDAY")
+  else if(day=="Tuesday")
   {
     tft.print("Strength comes from stillness.");
   }
-  else if(day=="WEDNESDAY")
+  else if(day=="Wednesday")
   {
     tft.print("Compassion is the true power.");
   }
-  else if(day=="THURSDAY")
+  else if(day=="Thursday")
   {
     tft.print("Let go and trust the flow.");
   }
-  else if(day=="FRIDAY")
+  else if(day=="Friday")
   {
     tft.print("Gratitude lights the path.");
   }
-  else if(day=="SATURDAY")
+  else if(day=="Saturday")
   {
     tft.print("Silence speaks the deepest truths.");
   }
-  else if(day=="SUNDAY")
+  else if(day=="Sunday")
   {
     tft.print("Inner peace is your true home.");
   }
