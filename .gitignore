@@ -1,3 +1,5 @@
 # Ignore all files in all libraries
 libraries/*
 
+# Ignore all PDF files anywhere
+*.pdf
