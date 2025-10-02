@@ -8,7 +8,7 @@
 #include <Adafruit_ST7796S.h>
 #include <SPI.h>
 #include <Modulino.h>
-
+#include <vector>
 
 
 ModulinoThermo thermo;
@@ -28,7 +28,20 @@ int seconds=0;
 // Hardware SPI: MOSI/SCK from ICSP header
 Adafruit_ST7796S tft = Adafruit_ST7796S(&SPI, TFT_CS, TFT_DC, TFT_RST);
 
+/* just for reference
+enum class DayOfWeek {
+  MONDAY = 0,   // case 0
+  TUESDAY,      // 1
+  WEDNESDAY,    // 2
+  THURSDAY,     // 3
+  FRIDAY,       // 4
+  SATURDAY,     // 5
+  SUNDAY        // 6
+};
+*/
 
+
+/*
 String getDayOfWeek(DayOfWeek d)
 {
 
@@ -42,9 +55,16 @@ String getDayOfWeek(DayOfWeek d)
     case DayOfWeek::SATURDAY: return "SATURDAY";
     case DayOfWeek::SUNDAY: return "SUNDAY";
   }
-  
-
 }
+*/
+
+
+String getDayOfWeek(DayOfWeek d)
+{
+  static std::vector<String> days = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"};  
+  return days[int(d)-1];
+}
+
 
 
 
@@ -56,12 +76,12 @@ void setup() {
   tft.init(8000000); 
 
   tft.setRotation(1);
-  tft.fillScreen(ST77XX_BLUE);
-  tft.setTextColor(ST77XX_WHITE, ST77XX_BLUE);
+  tft.fillScreen(ST77XX_WHITE);
+  tft.setTextColor(ST77XX_BLUE, ST77XX_WHITE);
   tft.setTextSize(3);
   tft.setCursor(0, 0);
   tft.println("Hello, Mayank!");
-  tft.println("Today is a good day!");
+  tft.println("You are the guide.");
   
   
   while (!Serial); // wait till the Serial monitor is ready
@@ -75,15 +95,17 @@ void setup() {
 
   
   // RTC first time setup
-  RTCTime startTime(23, //day
-  Month::AUGUST,        // month
+  
+  
+  RTCTime startTime(2, //day
+  Month::OCTOBER,        // month
   2025,                 // year
-  19, 18, 00,          // time
-  DayOfWeek::SATURDAY,   // day
+  10, 45 , 00,          // time
+  DayOfWeek::THURSDAY,   // day
   SaveLight::SAVING_TIME_ACTIVE);
-
   RTC.setTime(startTime);
   
+
 }
 
 void loop() {
@@ -96,7 +118,7 @@ void loop() {
   //int y = tft.getCursorY();
 
   //-------  Date ----------
-  tft.setCursor(0, 50);
+  tft.setCursor(0, 60);
   tft.print(currentTime.getDayOfMonth());
   tft.print("-");
   tft.print(Month2int(currentTime.getMonth()));
@@ -111,20 +133,57 @@ void loop() {
         currentTime.getSeconds()
   );
 
-  tft.setCursor(0,80);
+  tft.setCursor(0,90);
   tft.print(timeStr);
   
 
   
   //--- Temperature ---------
-  tft.setCursor(0, 120);
+  tft.setCursor(0, 130);
   tft.print("Temp: ");
   tft.print(thermo.getTemperature());
   tft.print((char)247);
   tft.print(" C ");
   
+  //--- DayOfWeek ----------
+  String day = getDayOfWeek(currentTime.getDayOfWeek());
+  tft.setCursor(0, 160);
+  tft.print(day);
+
+  tft.setCursor(0,200);
+  if(day=="MONDAY")
+  {
+    
+    tft.print("Start anew with a pure heart.");
+  }
+  else if(day=="TUESDAY")
+  {
+    tft.print("Strength comes from stillness.");
+  }
+  else if(day=="WEDNESDAY")
+  {
+    tft.print("Compassion is the true power.");
+  }
+  else if(day=="THURSDAY")
+  {
+    tft.print("Let go and trust the flow.");
+  }
+  else if(day=="FRIDAY")
+  {
+    tft.print("Gratitude lights the path.");
+  }
+  else if(day=="SATURDAY")
+  {
+    tft.print("Silence speaks the deepest truths.");
+  }
+  else if(day=="SUNDAY")
+  {
+    tft.print("Inner peace is your true home.");
+  }
+
 
   // --- Delay ------
-  delay(1000); //1sec or 1000ms
+  delay(200); //200ms
+
 
 }//end program

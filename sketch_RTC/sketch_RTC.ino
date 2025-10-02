@@ -39,7 +39,7 @@ void setup() {
   RTC.begin();
   
   // Write once, upload, then comment and then upload again
-  /*  
+  
 
   RTCTime startTime(19, //day
   Month::AUGUST,        // month
@@ -49,7 +49,7 @@ void setup() {
   SaveLight::SAVING_TIME_ACTIVE);
 
   RTC.setTime(startTime);
-  */
+  
 
 }
 
