@@ -3,3 +3,7 @@ libraries/*
 
 # Ignore all PDF files anywhere
 *.pdf
+
+
+# Ignore macOS system files
+.DS_Store
